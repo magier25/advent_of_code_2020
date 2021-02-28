@@ -1,5 +1,6 @@
 
 class PasswordRecord2
+  Record = Struct.new(:min, :max, :letter, :password)
   def initialize(record)
     @record = record
   end
@@ -7,22 +8,20 @@ class PasswordRecord2
   def valid?
     data = parse
 
-    first = data[:letter] == data[:password].at(data[:min]-1)
-    second = data[:letter] == data[:password].at(data[:max]-1)
+    first = data.letter == data.password.at(data.min-1)
+    second = data.letter == data.password.at(data.max-1)
     result = (first != second)
     #puts "data: #{data.inspect}, count: #{count}, result: #{result}"
     result
   end
 
-  private
-
   def parse
-    m = @record.match(/(\d+)-(\d+) (.): (.+)/).captures
-    # ie. ["1", "12", "a", "akdfjakwjsjks"]
-    {password: m[3].split(""), letter: m[2], min: m[0].to_i, max: m[1].to_i}
+    @record.match(/(\d+)-(\d+) (.): (.+)/) do |m|
+      # ie. ["1", "12", "a", "akdfjakwjsjks"]
+      c = m.captures
+      Record.new(c[0].to_i, c[1].to_i, c[2], c[3].split(""))
+    end
   end
-
-
 end
 
 class Day02_2
