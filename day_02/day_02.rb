@@ -10,24 +10,16 @@ class PasswordRecord
 
     count = data[:password].count(data[:letter])
     result = data[:min] <= count && count <= data[:max]
-    #puts "data: #{data.inspect}, count: #{count}, result: #{result}"
+    puts "data: #{data.inspect}, count: #{count}, result: #{result}"
     result
   end
 
   private
 
   def parse
-    parts = @record.partition(":")
-    password = parts[2].strip
-
-    p2 = parts[0].split(" ")
-    letter = p2[1]
-
-    minmax = p2[0].split("-")
-    min = minmax[0].to_i
-    max = minmax[1].to_i
-
-    {password: password, letter: letter, min: min, max: max}
+    m = @record.match(/(\d+)-(\d+) (.): (.+)/).captures
+    # ie. ["1", "12", "a", "akdfjakwjsjks"]
+    {password: m[3], letter: m[2], min: m[0].to_i, max: m[1].to_i}
   end
 end
 
